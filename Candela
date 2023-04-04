@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+import pandas as pd
+data = pd.read_excel("CandelaLogCopy03312023.xlsx")
+data.info()
+
+threeinchdata = []
+twoinchdata = []
+for index , value in enumerate(data["Wafer"]):
+    if value == 3 and  data.iloc[index]["Pass/Fail"].casefold()== "PASS".casefold():
+        threeinchdata.append(data.iloc[index])
+    elif value == 2 and data.iloc[index]["Pass/Fail"].casefold()== "PASS".casefold():
+        twoinchdata.append(data.iloc[index])
+
+threeinchframe = pd.DataFrame(threeinchdata)
+twoinchframe = pd.DataFrame(twoinchdata)
+
+zerototwenty = 0
+twentyonetoforty = 0
+fortyonetosixty = 0
+greaterthansixty = 0
+
+zerototwentyTwoinch = 0
+twentyonetofortyTwoinch = 0
+fortyonetosixtyTwoinch = 0
+greaterthansixtyTwoinch = 0
+for value in threeinchframe["# Particles (A = 100+ um^2)"]:
+    if value <= 20:
+        zerototwenty += 1;
+    elif value >20 and value <=40:
+        twentyonetoforty += 1
+    elif value >40 and value <=60:
+        fortyonetosixty += 1
+    else:
+        greaterthansixty += 1
+        
+for value in twoinchframe["# Particles (A = 100+ um^2)"]:
+    if value <= 20:
+        zerototwentyTwoinch += 1;
+    elif value >20 and value <=40:
+        twentyonetofortyTwoinch += 1
+    elif value >40 and value <=60:
+        fortyonetosixtyTwoinch += 1
+    else:
+        greaterthansixtyTwoinch += 1
+
+print(zerototwenty)
+print(twentyonetoforty)
+print(fortyonetosixty)
+print(greaterthansixty)
+
+print(zerototwentyTwoinch)
+print(twentyonetofortyTwoinch)
+print(fortyonetosixtyTwoinch)
+print(greaterthansixtyTwoinch)
+
+dist = pd.DataFrame({'Three Inch Wafers': threeinchframe["# Particles (A = 100+ um^2)"], 'Two Inch Wafers': twoinchframe["# Particles (A = 100+ um^2)"],})
+overalldistdist = dist.plot.kde(title= "Distribution of Defect Counts Using Kernel Density Estimation", grid= True,)
